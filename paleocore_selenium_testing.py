@@ -6,6 +6,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
 
+# TODO: Test results should be printed to a log file, rather than to stdout
+# TODO: Generalize check_page_loaded() to work for any webpage (important for
+#		checking links)
+
 ####################
 # Test definitions #
 ####################
@@ -46,18 +50,43 @@ def home_links_nav_check():
 
 	print 'home_links_nav_check: ' + links_nav_check(links)
 
+# TODO: Possibly add test for clicking on the homepage image
+
+#
+## About page tests
+#
+
+def about_links_nav_check():
+	links = (
+				('//h3[text()="Links to Related Projects"]/..' + \
+										'//a[text()="Dublin Core Iniative"]',
+					'http://www.dublincore.org/'),
+				('//h3[text()="Links to Related Projects"]/..' + \
+										'//a[text()="TDWG"]',
+					'http://www.tdwg.org/'),
+				('//h3[text()="Links to Related Projects"]/..' + \
+										'//a[text()="GBIF"]',
+					'http://www.gbif.org/')
+			)
+
+	print 'about_links_nav_check: ' + links_nav_check(links)
+
 #######################
 # Page test groupings #
 #######################
 
 home = (banner_links_nav_check, home_links_nav_check)
+about = (about_links_nav_check,)
 
 ######################
 # Run configurations #
 ######################
 
 browsers = (webdriver.Chrome,)
-pages = ((home, 'http://www.paleocore.org'),)
+pages = (
+			(home, 'http://www.paleocore.org'),
+			# (about, 'http://www.paleocore.org/about'),
+		)
 
 ####################
 # Global variables #
@@ -114,7 +143,6 @@ def check_page_loaded():
 		waiter = WebDriverWait(driver, 10)
 		waiter.until(EC.presence_of_element_located((By.ID, 'header-wrapper')))
 	except TimeoutException:
-		# TODO: In the future, instead of just printing error, maintain a log
 		print 'Paleocore page failed to load'
 		driver.quit()
 		sys.exit()
@@ -122,8 +150,10 @@ def check_page_loaded():
 
 def link_check(element_xpath, destination_url):
 	"""
-	Input: element_xpath- xpath of link element to be tested
-		   destination_url- page to which the link should redirect
+	Input:  element_xpath- xpath of link element to be tested
+		   	destination_url- page to which the link should redirect
+	Output: None if element at element_xpath redirected to destination_url,
+			otherwise a string of some error text
 
 	Generic method for making sure that links are working properly.
 	"""
@@ -144,6 +174,15 @@ def link_check(element_xpath, destination_url):
 
 
 def links_nav_check(links):
+	"""
+	Input:  links- tuples of string pairs for each link on a page to be checked
+			contained in a tuple
+	Output: A string of the test results, with error details if there was a
+			failure
+
+	Method for checking a group of links defined in a test.
+	"""
+
 	test_results = 'pass'
 
 	for (xpath, destination) in links:
