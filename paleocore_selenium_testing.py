@@ -1,5 +1,5 @@
-import sys
-from time import sleep
+import sys, time
+# from time import sleep
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -7,8 +7,46 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
 
 # TODO: Test results should be printed to a log file, rather than to stdout
-# TODO: Generalize check_page_loaded() to work for any webpage (important for
-#		checking links)
+
+####################
+# Global variables #
+####################
+
+driver = None
+test_url = None
+
+############################
+# Useful class definitions #
+############################
+
+# TODO: Move this to a place where it actually belongs
+def wait_for(condition_function):
+    start_time = time.time()
+    
+    while time.time() < start_time + 3:
+        if condition_function():
+            return True
+        else:
+            time.sleep(0.1)
+
+    raise Exception('Timeout waiting for {}'.format(condition_function.__name__))
+
+# Credit for this extremely useful class:
+# http://www.obeythetestinggoat.com/how-to-get-selenium-to-wait-for-page-load-after-a-click.html
+class wait_for_page_load(object):
+
+    def __init__(self, browser):
+        self.browser = browser
+
+    def __enter__(self):
+        self.old_page = self.browser.find_element_by_tag_name('html')
+
+    def page_has_loaded(self):
+        new_page = self.browser.find_element_by_tag_name('html')
+        return new_page.id != self.old_page.id
+
+    def __exit__(self, *_):
+        wait_for(self.page_has_loaded)
 
 ####################
 # Test definitions #
@@ -59,8 +97,8 @@ def home_links_nav_check():
 def about_links_nav_check():
 	links = (
 				('//h3[text()="Links to Related Projects"]/..' + \
-										'//a[text()="Dublin Core Iniative"]',
-					'http://www.dublincore.org/'),
+										'//a[text()="Dublin Core Initiative"]',
+					'http://dublincore.org/'),
 				('//h3[text()="Links to Related Projects"]/..' + \
 										'//a[text()="TDWG"]',
 					'http://www.tdwg.org/'),
@@ -85,15 +123,8 @@ about = (about_links_nav_check,)
 browsers = (webdriver.Chrome,)
 pages = (
 			(home, 'http://www.paleocore.org'),
-			# (about, 'http://www.paleocore.org/about'),
+			(about, 'http://www.paleocore.org/about'),
 		)
-
-####################
-# Global variables #
-####################
-
-driver = None
-test_url = None
 
 ###############
 # Main method #
@@ -112,14 +143,10 @@ def main():
 		for (tests, url) in pages:
 			global test_url
 			test_url = url
-			
-			driver.get(url)
-			check_page_loaded()
 		
 			for test in tests:
-				test()
 				driver.get(url)
-				check_page_loaded()
+				test()
 
 	# Closes window and ends program
 	driver.quit()
@@ -128,25 +155,6 @@ def main():
 ##################
 # Helper methods #
 ##################
-
-def check_page_loaded():
-	"""
-	Helper method that verifies that at least the header of the current page has
-	loaded
-	"""
-
-	# This should be changed if possible. The difficulty is that it is important
-	# that the old page is no longer on the screen.
-	sleep(1)
-
-	try:
-		waiter = WebDriverWait(driver, 10)
-		waiter.until(EC.presence_of_element_located((By.ID, 'header-wrapper')))
-	except TimeoutException:
-		print 'Paleocore page failed to load'
-		driver.quit()
-		sys.exit()
-
 
 def link_check(element_xpath, destination_url):
 	"""
@@ -158,19 +166,12 @@ def link_check(element_xpath, destination_url):
 	Generic method for making sure that links are working properly.
 	"""
 
-	try:
-		waiter = WebDriverWait(driver, 10)
-		link_element = waiter.until(EC.presence_of_element_located((By.XPATH,
-																element_xpath)))
-	except TimeoutException:
-		return 'Element with xpath of \"' + element_xpath + '\" not found'
-
-	link_element.click()
-	check_page_loaded()
+	with wait_for_page_load(driver):
+		driver.find_element_by_xpath(element_xpath).click()
 
 	if driver.current_url != destination_url:
 		return 'Element with xpath of \"' + element_xpath + '\" led to ' + \
-			    driver.current_url + ' instead of ' + destination_url
+		    	driver.current_url + ' instead of ' + destination_url
 
 
 def links_nav_check(links):
@@ -194,7 +195,6 @@ def links_nav_check(links):
 			test_results += '\n\t' + link_result
 
 		driver.get(test_url)
-		check_page_loaded()
 
 	return test_results
 
