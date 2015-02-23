@@ -34,7 +34,7 @@ def main():
 	# TODO: Figure out a way to run the tests on multiple browsers in one run.
 	driver = webdriver.Chrome()
 
-	driver.get('http://127.0.0.1:8001/meetings/abstract/add/')
+	driver.get('http://127.0.0.1:8000/meetings/abstract/add/')
 
 	page_loaded(driver)
 
@@ -166,7 +166,7 @@ def add_author(driver):
 	except NoSuchElementException:
 		print 'add_author: fail'
 	finally:
-		driver.get('http://127.0.0.1:8001/meetings/abstract/add/')
+		driver.get('http://127.0.0.1:8000/meetings/abstract/add/')
 
 		page_loaded(driver)
 
@@ -204,7 +204,7 @@ def test_results(expected_title, test_name, driver):
 	except AssertionError:
 		print test_name + ': fail'
 	finally:
-		driver.get('http://127.0.0.1:8001/meetings/abstract/add/')
+		driver.get('http://127.0.0.1:8000/meetings/abstract/add/')
 
 		page_loaded(driver)
 
