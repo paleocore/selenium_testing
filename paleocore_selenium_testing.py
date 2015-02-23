@@ -19,7 +19,8 @@ test_url = None
 # Useful class definitions #
 ############################
 
-# TODO: Move this to a place where it actually belongs
+# TODO: Move this to a place where it actually belongs. Maybe move helper
+#		method section?
 def wait_for(condition_function):
     start_time = time.time()
     
