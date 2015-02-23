@@ -139,7 +139,7 @@ def tools_links_nav_check():
                 ('//h3[text()="Data Modeling Tools"]/..//a[text()="spatial database"]', 'http://gis1.asurite.ad.asu.edu/hadarv3/'),
                 ('//h3[text()="Data Modeling Tools"]/..//a[text()="HERC"]', 'http://herc.berkeley.edu/'),
                 ('//h3[text()="Data Modeling Tools"]/..//a[text()="fossil cast database"]', 'https://middleawash.berkeley.edu/HERC_specimen_db/main_query.php'),
-                ('//h3[text()="Data Modeling Tools"]/..//a[text()="Middle Awash Project Databae"]', 'http://www.fossilized.org/middle_awash/specimen_db/query.php'),
+                ('//h3[text()="Data Modeling Tools"]/..//a[text()="Middle Awash Project Database"]', 'http://www.fossilized.org/middle_awash/specimen_db/query.php'),
                 ('//h3[text()="Data Modeling Tools"]/..//a[text()="Movebank"]', 'https://www.movebank.org/'),
                 ('//h3[text()="Data Modeling Tools"]/..//a[text()="NEON"]', 'http://www.neoninc.org/'),
                 ('//h3[text()="Data Modeling Tools"]/..//a[text()="Neotoma"]', 'http://www.neotomadb.org/'),
