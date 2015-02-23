@@ -1,4 +1,4 @@
-import time
+import time, sys
 
 ############################
 # Useful class definitions #
@@ -27,15 +27,10 @@ class WaitForPageLoad(object):
 		wait_for(self.page_has_loaded)
 
 
-class GeneralTest(object):
+class Tester(object):
 	"""
 	This class is to make the general definitions a little easier
 	"""
-
-	def __init__(self, driver, test_url):
-		self.driver = driver
-		self.test_url = test_url
-
 
 	def link_check(self, element_xpath, destination_url):
 		"""
@@ -80,13 +75,29 @@ class GeneralTest(object):
 		return test_results
 
 
+	def run_test_suite(self, browsers, pages):
+		for browser in browsers:
+			self.driver = browser()
+			self.driver.implicitly_wait(1)
+
+			for (tests, url) in pages:
+				self.test_url = url
+
+				for test in tests:
+					self.driver.get(url)	
+					test()
+
+		# Closes window and ends program
+		self.driver.quit()
+		sys.exit()
+
 ##################
 # Helper methods #
 ##################
 
 def wait_for(condition_function):
 	"""
-	Necessary for above class
+	Necessary for WaitForPageLoad
 	"""
 
 	start_time = time.time()
