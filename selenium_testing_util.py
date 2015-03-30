@@ -1,4 +1,5 @@
 import time, sys
+from selenium.common.exceptions import NoSuchElementException
 
 ############################
 # Useful class definitions #
@@ -43,7 +44,13 @@ class Tester(object):
         """
 
         with WaitForPageLoad(self.driver):
-            self.driver.find_element_by_xpath(element_xpath).click()
+            try:
+                self.driver.find_element_by_xpath(element_xpath).click()
+            except NoSuchElementException:
+                # This redirect doesn't really matter, it's just to facilitate
+                # exiting the with statement
+                self.driver.get(destination_url)
+                return 'Element with xpath of ' + element_xpath + ' not found.'
 
         if self.driver.current_url != destination_url:
             return 'Element with xpath of \"' + element_xpath + '\" led to ' + \

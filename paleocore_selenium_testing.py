@@ -24,15 +24,17 @@ tester = Tester()
 def banner_links_nav_check():
     links = (
                 ('//nav[@id="nav"]//a[text()="Home"]',
-                    'http://www.paleocore.org/'),
+                    'http://paleocore-qa.tacc.utexas.edu/'),
                 ('//nav[@id="nav"]//a[text()="About"]',
-                    'http://www.paleocore.org/about/'),
+                    'http://paleocore-qa.tacc.utexas.edu/about/'),
                 ('//nav[@id="nav"]//a[text()="Workshops"]',
-                    'http://www.paleocore.org/workshops/'),
-                ('//nav[@id="nav"]//a[text()="Data"]',
-                    'http://www.paleocore.org/data/'),
+                    'http://paleocore-qa.tacc.utexas.edu/workshops/'),
                 ('//nav[@id="nav"]//a[text()="Tools"]',
-                    'http://www.paleocore.org/tools/')
+                    'http://paleocore-qa.tacc.utexas.edu/tools/'),
+                ('//nav[@id="nav"]//a[text()="Standard"]',
+                    'http://paleocore-qa.tacc.utexas.edu/standard/'),
+                ('//nav[@id="nav"]//a[text()="Projects"]',
+                    'http://paleocore-qa.tacc.utexas.edu/projects/')
             )
 
     print 'banner_links_nav_check: ' + tester.links_nav_check(links)
@@ -41,13 +43,13 @@ def banner_links_nav_check():
 def home_links_nav_check():
     links = (
                 ('//h2[text()="About PaleoCore"]/..//a[text()="More..."]',
-                    'http://www.paleocore.org/about/'),
+                    'http://paleocore-qa.tacc.utexas.edu/about/'),
                 ('//h2[text()="Community"]/..//a[text()="More..."]',
-                    'http://www.paleocore.org/workshops/'),
+                    'http://paleocore-qa.tacc.utexas.edu/workshops/'),
                 ('//h2[text()="Tools"]/..//a[text()="More..."]',
-                    'http://www.paleocore.org/tools/'),
+                    'http://paleocore-qa.tacc.utexas.edu/tools/'),
                 ('//h2[text()="Data"]/..//a[text()="More..."]',
-                    'http://www.paleocore.org/data/')
+                    'http://paleocore-qa.tacc.utexas.edu/data/')
             )
 
     print 'home_links_nav_check: ' + tester.links_nav_check(links)
@@ -157,9 +159,9 @@ tools = (tools_links_nav_check,)
 
 browsers = (webdriver.Chrome,)
 pages = (
-            (home, 'http://www.paleocore.org'),
-            (about, 'http://www.paleocore.org/about'),
-            (tools, 'http://www.paleocore.org/tools'),
+            (home, 'http://paleocore-qa.tacc.utexas.edu'),
+            (about, 'http://paleocore-qa.tacc.utexas.edu/about'),
+            (tools, 'http://paleocore-qa.tacc.utexas.edu/tools'),
         )
 
 
